@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Submit</title>
+        <link href="/public/css/mainStyle.css" type="text/css" rel="stylesheet" />
+        <script src="/public/js/jquery-2.0.3.min.js" type="text/javascript" ></script> 
+        <script src="/public/js/transactionTest.js" type="text/javascript" ></script>        
+    </head>
+    <body>
+        <header>
+            <div class="head Left">Tester</div>
+            <div class="Right"><span class="head Left rightTitle">Market Trade Processor</span>
+                <svg height="44px" width="44px">
+                <circle r="20" cx="21" cy="21" stroke="black" fill="none"/>
+                <path d="M21 0 v40" stroke="black" fill="none"/>
+                <path d="M0 21 h40" stroke="black" fill="none"/>
+                </svg>
+            </div>
+        </header>
+        <article>
+        <input id="defaultTransaction" type="button" value="Default Transaction" />
+        </article>
+        <article>
+        <form id="Main" method="POST">
+            <div class="minimiser"><image class="plusImage" src="/public/images/minus.png"/>Manual Transaction</div>
+            <div class="Left leftCol">
+                <div>User ID: </div>
+                <div>Currency From: </div>
+                <div>Currency To: </div> 
+                <div>Amount Sell: </div>
+                <div>Amount Buy: </div>
+                <div>Rate: </div> 
+                <div>Time Placed: </div>
+                <div>Originating Country: </div>
+            </div>            
+            <div>
+                <div><input id="userid" name="userid" type="number" required /></div>
+                <div><input id="currencyFrom" name="currencyFrom" type="text" required /></div>
+                <div><input id="currencyTo" name="currencyTo" type="text" required /></div>
+                <div><input id="amountSell" name="amountSell" type="number" step="any" required /></div>
+                <div><input id="amountBuy" name="amountBuy" type="number" step="any" required /></div>
+                <div><input id="rate" name="rate" type="number" step="any" required /></div>
+                <div><input id="timePlaced" name="timePlaced" type="datetime-local" required /></div>
+                <div><input id="originatingCountry" name="originatingCountry" type="text" maxlength="2" required /></div>
+            </div>
+            <div><input id="submitForm" type="submit" value="Submit" /></div>
+        </form>  
+        </article>
+        <div id="SuccessText" class="success hidden"></div>
+        <div id="ErrorText" class="error hidden"></div>
+    </body>
+</html>
+

@@ -1,0 +1,80 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 17-May-2015, 20:57:11
+    Author     : DG
+*/
+
+div {
+    margin-bottom: 1em;
+}
+
+article {
+    clear: both;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+header {
+    font-size:large;
+    font-weight: bold;
+    padding: 0.5em;  
+    width: 20em;
+}
+
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;    
+}
+td {
+    padding: 0.2em;
+}
+th {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+    background-color: Khaki;
+    padding: 0.5em;
+}
+.head { 
+        margin-top: 0.5em;
+}
+.hidden {
+    display: none;
+}
+.invalid {
+    border-color: red;
+}
+.Left {
+    float: left;
+}
+.leftCol {
+    margin-right: 1em;
+}
+.minimiser {
+    font-weight: bold;
+}
+.plusImage {
+    margin-right: 1em;
+}
+.Right {
+    float: right;
+}
+.rightTitle {
+    margin-right:0.5em;
+}
+.success {
+    font-weight: bold;
+    background-color: Khaki;
+    padding: 0.5em;
+}
+

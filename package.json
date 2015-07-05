@@ -1,0 +1,11 @@
+{
+  "name": "market-trade-reporting",
+  "version": "0.0.1",
+  "description": "Intended to provide reporting functions on Market Trade",
+  "dependencies": {
+    "express": "^4.10.2",
+    "mysql": "^2.7.0",
+    "node-mysql": "^0.4.2",
+    "socket.io": "^1.3.5"
+  }
+}
