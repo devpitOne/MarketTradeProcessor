@@ -9,14 +9,14 @@ and open the template in the editor.
         <title>MTP Reporting</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="/jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
-        <link href="/css/mainStyle.css" type="text/css" rel="stylesheet" />
-        <script src="/js/socket.io.js" type="text/javascript"></script>
-        <script src="/js/jquery-2.0.3.min.js" type="text/javascript" ></script> 
-        <script src="/js/reporting.js" type="text/javascript"></script>
-        <script src="/js/chart.min.js" type="text/javascript"></script>
-        <script src="/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-	<script src="/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+        <link href="./jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="./css/mainStyle.css" type="text/css" rel="stylesheet" />
+        <script src="./js/socket.io.js" type="text/javascript"></script>
+        <script src="./js/jquery-2.0.3.min.js" type="text/javascript" ></script> 
+        <script src="./js/reporting.js" type="text/javascript"></script>
+        <script src="./js/chart.min.js" type="text/javascript"></script>
+        <script src="./jqvmap/jquery.vmap.js" type="text/javascript"></script>
+	<script src="./jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
     </head>
     <body>
         <header>
@@ -32,9 +32,9 @@ and open the template in the editor.
         </header>
         <article id="map" class="Left">
             <div class="minimiser"><image class="plusImage" src="/images/minus.png"/>Map</div>
-            <div id="vmap" style="width: 600px; height: 400px;"></div>
+            <div id="vmap"></div>
         </article>   
-        <div id="graph" class="Left">
+        <div id="graph" class="Left"><!--switch to an aside?-->
             <div class="minimiser"><image class="plusImage" src="/images/minus.png"/>Graph</div>
             <canvas id="graphDisplay" width="400" height="400"></canvas>
         </div>

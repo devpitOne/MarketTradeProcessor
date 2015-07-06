@@ -1,24 +1,25 @@
 <?php
-
 //ini_set('display_errors', 1);
-if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos($_SERVER['HTTP_REFERER'], 'the-devpit.net') || strpos($_SERVER['HTTP_REFERER'], 'localhost'))) {
-    //TODO: POST has been deprecated, refactor 
-    $test = preg_grep("/^\d+$/", str_split($_POST["userId"]), PREG_GREP_INVERT);
-    $servername = "127.0.0.1:2433";
-    $username = "WebLink";
-    $password = "starwolf_2spookY";
+
+$config = json_decode(file_get_contents('../config.json'), true);
+if (array_key_exists('HTTP_REFERER', filter_input_array(INPUT_SERVER)) && (strpos(filter_input(INPUT_SERVER, 'HTTP_REFERER'), 'the-devpit.net') || strpos(filter_input(INPUT_SERVER, 'HTTP_REFERER'), 'localhost'))) {
+    $test = preg_grep("/^\d+$/", str_split(filter_input(INPUT_POST, "userId")), PREG_GREP_INVERT);
+    $servername = $config["sqlConn"]["host"].":".$config["sqlConn"]["port"];
+    $username = $config["sqlConn"]["user"];
+    $password = $config["sqlConn"]["password"];
+    $database = $config["sqlConn"]["database"];
 // Create connection
-    $conn = new mysqli($servername, $username, $password);
+    $conn = new mysqli($servername, $username, $password, $database);
 // Check connection
     if ($conn->connect_error) {
         ReturnError("I failed to connect. Please contact the admin");
         die("Connection failed: " . $conn->connect_error);
     }
+    $checkStmt = $conn->prepare("SELECT lastRequest, throttleLimit FROM user WHERE userID = ?");
     $minute = 60;
-    $minute_limit = 10; //request limit. Refactor to config
-    $checkStmt = $conn->prepare("SELECT lastRequest, throttleLimit FROM mtp.user WHERE userID = ?");
+    $minute_limit = 10; //request limit. Refactor to config    
     $checkStmt->bind_param("i", $userid);
-    $userid = $conn->real_escape_string($_POST["userId"]);
+    $userid = $conn->real_escape_string(filter_input(INPUT_POST, "userId"));
     $checkStmt->execute();
     $checkStmt->bind_result($lastRequest, $throttleLimit);
     $checkStmt->fetch();
@@ -45,7 +46,7 @@ if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos($_SERVER['HTTP_REFERER
         return;
     }
     //Should this go before or after the inesrt attempt? Before means failed transactions still throttle
-    $userStmt = $conn->prepare("UPDATE mtp.user SET lastRequest = ?, throttleLimit = ? WHERE userID = ?");        
+    $userStmt = $conn->prepare("UPDATE user SET lastRequest = ?, throttleLimit = ? WHERE userID = ?");        
     $dateNow = date('Y-m-d H:i:s');
     $userStmt->bind_param("sdi", $dateNow, $new_minute_throttle, $userid);
     $userStmt->execute();
@@ -57,21 +58,21 @@ if (array_key_exists('HTTP_REFERER', $_SERVER) && (strpos($_SERVER['HTTP_REFERER
         return;//Should probably stop prcessing since if we can't throttle we're dead.          
     }
 
-    //Prepare request - There is no validation here yet
-    $insertStmt = $conn->prepare("INSERT INTO mtp.transaction (userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, timePlaced, originatingCountry) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    //Prepare request - There is no validation here. Also I'm paranoid about SQL injection
+    $insertStmt = $conn->prepare("INSERT INTO transaction (userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, timePlaced, originatingCountry) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $insertStmt->bind_param("issdddss", $userid, $currencyFrom, $currencyTo, $amountSell, $amountBuy, $rate, $timePlaced, $originatingCountry);
-    $currencyFrom = $conn->real_escape_string($_POST["currencyFrom"]);
-    $currencyTo = $conn->real_escape_string($_POST["currencyTo"]);
-    $amountSell = $conn->real_escape_string($_POST["amountSell"]);
-    $amountBuy = $conn->real_escape_string($_POST["amountBuy"]);
-    $rate = $conn->real_escape_string($_POST["rate"]);    
+    $currencyFrom = $conn->real_escape_string(filter_input(INPUT_POST, "currencyFrom"));
+    $currencyTo = $conn->real_escape_string(filter_input(INPUT_POST, "currencyTo"));
+    $amountSell = $conn->real_escape_string(filter_input(INPUT_POST, "amountSell"));
+    $amountBuy = $conn->real_escape_string(filter_input(INPUT_POST, "amountBuy"));
+    $rate = $conn->real_escape_string(filter_input(INPUT_POST, "rate"));    
     $timezone = new DateTimeZone('UTC');
-    $datetime = DateTime::createFromFormat('d-M-y H:i:s', $conn->real_escape_string($_POST["timePlaced"]), $timezone);
+    $datetime = DateTime::createFromFormat('d-M-y H:i:s', $conn->real_escape_string(filter_input(INPUT_POST, "timePlaced")), $timezone);
     if ($datetime==false){
-        $datetime = DateTime::createFromFormat('d-m-Y H:i:s', $conn->real_escape_string($_POST["timePlaced"]), $timezone);
+        $datetime = DateTime::createFromFormat('d-m-Y H:i:s', $conn->real_escape_string(filter_input(INPUT_POST, "timePlaced")), $timezone);
     }
     $timePlaced = date_format($datetime, 'Y-m-d H:i:s');
-    $originatingCountry = $conn->real_escape_string($_POST["originatingCountry"]);
+    $originatingCountry = $conn->real_escape_string(filter_input(INPUT_POST, "originatingCountry"));
 
     if ($insertStmt->execute() === TRUE) {
         ReturnSuccess("Transaction processed successfully");
@@ -97,4 +98,3 @@ function ReturnSuccess($errorMsg) {
     echo json_encode($arr);
 }
 
-?>

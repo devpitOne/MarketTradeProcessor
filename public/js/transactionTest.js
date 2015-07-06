@@ -87,13 +87,13 @@ function Validate() {
         var datetime = $('#timePlaced').val();
         if (/^\d{2}-\w+-\d{2}\W\d{2}:\d{2}:\d{2}$/.test($('#timePlaced').val()) === false) {
             $('#timePlaced').addClass("invalid");
-            WriteError("Sorry, but your date time must be in the exact format of 24-JAN-15 10:27:44 or just a valid date 2015-01-01 in order to be processed.");
+            WriteError("Sorry, but your date time must be in the exact format of 24-JAN-15 10:27:44 or just a valid date eg. 2015-01-01 in order to be processed.");
             return;
         }
     }
     if ($('input:invalid').length > 0) {
         $('input:invalid').addClass("invalid");
-        WriteError("Some of your entries are invalid above.");
+        WriteError("Sorry but some of your entries are invalid above.");
         return;
     }
     Submit();

@@ -19,10 +19,6 @@ $(document).ready(function () {
     $('#vmap').vectorMap({map: 'world_en'});
 
     var socket = io();
-    socket.emit("listRequest", "");
-    socket.emit("graphRequest", "");
-    socket.emit("mapRequest", "");
-
     socket.on("listResponse", function (msg) {
         //Table display
         $('#listDisplay').empty();
@@ -71,11 +67,15 @@ $(document).ready(function () {
                 {
                     if (countryList[code.toUpperCase()]) {
                         var test = label.text();
-                        label.text(test + ": "+countryList[code.toUpperCase()]);
+                        label.text(test + ": " + countryList[code.toUpperCase()]);
                     }
                 }
         );
     });
+
+    socket.emit("listRequest", "");
+    socket.emit("graphRequest", "");
+    socket.emit("mapRequest", "");
 });
 
 function AddSpaces(string) {
