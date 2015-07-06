@@ -22,9 +22,9 @@ ReportServer.js is the Node.js server file. You'll need to run with node.
 
 Usage:
 The three interactive webpages are 
--AddUser.html expediates adding new user ids to the database
+-AddUser.html expedite adding new user ids to the database
 -TransactionTest.html which interacts with the POST endpoint 
--Reporting.html which is served by Node.js
+-Reporting.html which is served by Node.js. It has three fairly static displays. The List shows the most recent transactions, the graph charts transfers by currency pair and the map can be hovered over to see which transfers by country
 
 The POST endpoint is at MTProcessor.php, there's referrer checking enforced. It can be turned off in the config.
 If the userid given does not exist in the database it will return an error.

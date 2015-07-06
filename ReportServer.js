@@ -9,7 +9,7 @@ var config = require("./config.json");
 //TODO: Prepared statements with the mysql module. No dynamic queries yet.
 var pool = db.createPool(config.sqlConn);
 var sqlConn = db.createConnection(config.sqlConn);
-var listQuery = 'select transactionId, userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, timePlaced, originatingCountry from transaction LIMIT 10';
+var listQuery = 'select transactionId, userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, timePlaced, originatingCountry from transaction Order By timePlaced desc LIMIT 10';
 var graphQuery = "select CONCAT(currencyFrom,'/',currencyTo) as 'month',COUNT(1) as 'amounts' FROM `mtp`.`transaction` GROUP BY currencyFrom, currencyTo";
 var mapQuery = "SELECT originatingCountry, COUNT(1) as 'amount' FROM transaction GROUP BY originatingCountry";
 var queryCallback = function (err, rows, fields) {
