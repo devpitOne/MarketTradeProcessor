@@ -1,8 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 'use strict';
 $(document).ready(function () {
     $('.minimiser').click(function (e) {
@@ -29,13 +24,20 @@ $(document).ready(function () {
         e.preventDefault();
         $('#ErrorText').hide();
         $('#SuccessText').hide();
-        Validate();
+        ValidateTime();
+        return false;
+    });
+    $('#userSubmit').click(function (e) {
+        e.preventDefault();
+        $('#ErrorText').hide();
+        $('#SuccessText').hide();
+        SubmitUser();
         return false;
     });
 });
 
 function LessThanTen(value) {
-  return (value < 10 ? '0' : '') + value;
+    return (value < 10 ? '0' : '') + value;
 }
 
 function Submit(data) {
@@ -43,13 +45,14 @@ function Submit(data) {
         var finalDate;
         if (/^\d{2}-\w+-\d{2}\W\d{2}:\d{2}:\d{2}$/.test($('#timePlaced').val()) === false) {
             var datetime = new Date($('#timePlaced').val());
-            finalDate = LessThanTen(datetime.getDate())+"-"+LessThanTen(datetime.getMonth()+1)+"-"+datetime.getFullYear()+" "+LessThanTen(datetime.getHours())+":"+LessThanTen(datetime.getMinutes())+":"+LessThanTen(datetime.getSeconds());
-        } else finalDate = $('#timePlaced').val();
+            finalDate = LessThanTen(datetime.getDate()) + "-" + LessThanTen(datetime.getMonth() + 1) + "-" + datetime.getFullYear() + " " + LessThanTen(datetime.getHours()) + ":" + LessThanTen(datetime.getMinutes()) + ":" + LessThanTen(datetime.getSeconds());
+        } else
+            finalDate = $('#timePlaced').val();
         data = {"userId": $('#userid').val(), "currencyFrom": $('#currencyFrom').val(), "currencyTo": $('#currencyTo').val(), "amountSell": $('#amountSell').val(), "amountBuy": $('#amountBuy').val(), "rate": $('#rate').val(), "timePlaced": finalDate, "originatingCountry": $('#originatingCountry').val()};
     }
     $.ajax({
         type: "POST",
-        url: "public/MTProcessor.php",
+        url: "MTProcessor.php",
         data: data,
         datatype: "json",
         success: function (response) {
@@ -81,8 +84,26 @@ function SubmitDefault() {
     Submit({"userId": "134256", "currencyFrom": "EUR", "currencyTo": "GBP", "amountSell": 1000, "amountBuy": 747.10, "rate": 0.7471, "timePlaced": "24-JAN-15 10:27:44", "originatingCountry": "FR"});
 }
 
+function SubmitUser() {
+    var data = {
+        userId: $('#userUser').val(),
+        type: "newUser"
+    };
+    if (Validate()) {
+        Submit(data);
+    }
+}
+
 function Validate() {
-    //Server also validates. But this can speed things up  
+    if ($('input:invalid').length > 0) {
+        $('input:invalid').addClass("invalid");
+        WriteError("Sorry but some of your entries are invalid above.");
+        return false;
+    }
+    else return true;
+}
+
+function ValidateTime() {
     if (isNaN(Date.parse($('#timePlaced').val()))) {
         var datetime = $('#timePlaced').val();
         if (/^\d{2}-\w+-\d{2}\W\d{2}:\d{2}:\d{2}$/.test($('#timePlaced').val()) === false) {
@@ -91,13 +112,9 @@ function Validate() {
             return;
         }
     }
-    if ($('input:invalid').length > 0) {
-        $('input:invalid').addClass("invalid");
-        WriteError("Sorry but some of your entries are invalid above.");
-        return;
+    if (Validate()) {
+        Submit();
     }
-    Submit();
-
 }
 
 function WriteError(text) {

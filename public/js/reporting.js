@@ -1,8 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 'use strict';
 $(document).ready(function () {
     $('.minimiser').click(function (e) {
@@ -62,6 +57,7 @@ $(document).ready(function () {
     });
     socket.on("mapResponse", function (msg) {
         var countryList = msg;
+        $('#vmap').unbind('labelShow.jqvmap');
         $('#vmap').bind('labelShow.jqvmap',
                 function (event, label, code)
                 {
@@ -73,6 +69,7 @@ $(document).ready(function () {
         );
     });
 
+    //Initial requests to get us loaded
     socket.emit("listRequest", "");
     socket.emit("graphRequest", "");
     socket.emit("mapRequest", "");

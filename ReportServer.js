@@ -1,8 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 //Order Dependent loads. Do not re-arrange
 var express = require('express');
 var app = express();
@@ -83,8 +78,8 @@ app.use("/", express.static(__dirname + "/public"));
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/Reporting.html');
 });
-http.listen(3000, function () {
-    console.log('listening on *:3000');
+http.listen(config.nodePort, function () {
+    console.log('listening on *:'+config.nodePort);
 });
 RealTimeEmit(); //Start the realtime broadcast
 

@@ -6,5 +6,9 @@
         "password": "root",
         "database": "mtp"
     },
-    "name": "DG"
+    "domainRestricted": true,
+    "domain": "localhost",
+    "requestLimit": 10,
+    
+    "nodePort": 3000
 }

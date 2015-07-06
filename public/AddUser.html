@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Add User</title>
+        <link href="./css/mainStyle.css" type="text/css" rel="stylesheet" />
+        <script src="./js/jquery-2.0.3.min.js" type="text/javascript" ></script> 
+        <script src="./js/transactionTest.js" type="text/javascript" ></script>        
+    </head>
+    <body>
+        <header>
+            <div class="head Left">Tester</div>
+            <div class="Right"><span class="head Left rightTitle">Market Trade Processor</span>
+                <svg height="44px" width="44px">
+                <circle r="20" cx="21" cy="21" stroke="black" fill="none"/>
+                <path d="M21 0 v40" stroke="black" fill="none"/>
+                <path d="M0 21 h40" stroke="black" fill="none"/>
+                </svg>
+            </div>
+        </header>
+        <article>
+            <form id="Main" method="POST">
+                <div class="minimiser"><image class="plusImage" src="/public/images/minus.png"/>Add User</div>
+                <div class="Left leftCol">
+                    <div class="clear"><div class="Left leftCol">User ID: </div><div class="Right"><input id="userUser" name="userid" type="number" required /></div></div>
+                </div>
+                    <div class="clear"><input id="userSubmit" type="submit" value="Submit" /></div>
+            </form>  
+        </article>
+        <div id="SuccessText" class="success hidden"></div>
+        <div id="ErrorText" class="error hidden"></div>
+    </body>
+</html>
+
