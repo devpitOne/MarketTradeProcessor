@@ -35,6 +35,7 @@ SSL enforced. Not possible in my current environment due to broken certs.
 Authentication. Web exposed POST endpoints will want verification like realex uses.
 A config that allows comments. JSON is limited that way.
 Foreign Keyed database with dedicated reporting tables. It would take the load off the queries.
+Unit Test Battery. Transaction Test is too high level currently.
 
 Default Message for reference
 userId": "134256", 

@@ -39,6 +39,7 @@ app.use("/", express.static(__dirname + "/public"));
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/Reporting.html');
 });
+//Inseucre and likely to conflict with htaccess. Deployment testing needed
 http.listen(config.nodePort, function () {
     console.log('listening on *:' + config.nodePort);
 });
@@ -110,8 +111,12 @@ function MapQuery() {
                 connection.release();
                 if (!err) {
                     var msgType = "mapResponse";
-                    io.emit(msgType, rows);
-                    //console.log('Result: ', queryResult);
+                    var result = {};
+                    for (var iter = 0; iter < rows.length; iter += 1) {
+                        result[rows[iter].originatingCountry] = rows[iter].amount;
+                    }
+                    io.emit(msgType, result);
+                    //console.log('Result: ', result);
                 }
                 else {
                     io.emit(msgType, "error");

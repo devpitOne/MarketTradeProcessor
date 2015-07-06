@@ -55,15 +55,15 @@ $(document).ready(function () {
         var ctx = $("#graphDisplay").get(0).getContext("2d");
         var myNewChart = new Chart(ctx).Bar(data, options);
     });
-    socket.on("mapResponse", function (msg) {
-        var countryList = msg;
+    socket.on("mapResponse", function (msg) {        
         $('#vmap').unbind('labelShow.jqvmap');
+        var countryList = msg;
         $('#vmap').bind('labelShow.jqvmap',
                 function (event, label, code)
                 {
                     if (countryList[code.toUpperCase()]) {
-                        var test = label.text();
-                        label.text(test + ": " + countryList[code.toUpperCase()]);
+                        var originalLabel = label.text();
+                        label.text(originalLabel + ": " + countryList[code.toUpperCase()]);
                     }
                 }
         );
