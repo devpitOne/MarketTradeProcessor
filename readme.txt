@@ -31,9 +31,10 @@ If the userid given does not exist in the database it will return an error.
 
 Nice-to-haves
 Framework for html pages, allowing unified header. Possible in node.js?
-SSL enforced. Not possible in my current environment.
+SSL enforced. Not possible in my current environment due to broken certs.
 Authentication. Web exposed POST endpoints will want verification like realex uses.
 A config that allows comments. JSON is limited that way.
+Foreign Keyed database with dedicated reporting tables. It would take the load off the queries.
 
 Default Message for reference
 userId": "134256", 

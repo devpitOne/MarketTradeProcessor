@@ -1,10 +1,12 @@
 {
     "sqlConn": {
+        "connectionLimit": 100,
         "host": "127.0.0.1",
         "port": 2433,
         "user": "WebLink",
         "password": "root",
-        "database": "mtp"
+        "database": "mtp",
+        "debug":false
     },
     "domainRestricted": true,
     "domain": "localhost",
