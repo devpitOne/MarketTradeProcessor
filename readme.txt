@@ -16,9 +16,9 @@ Is likely to be fraught with worry as all installations are. Do not be overly co
 
 The DB Creation Script is under DB_Script. Run that first.
 
-You'll need to change the $servername, $username and $password in MTProcessor.php and ReportServer.js. I haven't unified the config yet. Don't worry about the credentials there, I changed them before commit.
+The web config is the config.json file under the root. Alter it to set your DB Connection. 
 
-Deploy the project to your web server or open with an IDE.
+Deploy the project to your web server or run with an IDE. There's a htaccess for apache to keep people in the public folder.
 
 ReportServer.js is the Node.js file. You'll need to run with node.
 
@@ -27,10 +27,7 @@ The POST endpoint is at MTProcessor.php, the only security right now is checking
 
 
 Build Log
-npm install --save express@4.10.2
-had to run in the project folder
 
-My biggest problem with node.js is making the requires happy
 
 Default Message for reference
 userId": "134256", 
