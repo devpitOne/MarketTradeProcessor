@@ -1,7 +1,7 @@
 <?php
 
 //ini_set('display_errors', 1);
-
+error_reporting(E_ALL ^ E_WARNING); //Turn off when testing, keeps warnings from being spewed at the requestors
 $config = json_decode(file_get_contents('../config.json'), true);
 if ($config["domainRestricted"] == true) {
     if (array_key_exists('HTTP_REFERER', filter_input_array(INPUT_SERVER)) && strpos(filter_input(INPUT_SERVER, 'HTTP_REFERER'), $config["domain"])) {
@@ -26,6 +26,9 @@ function ProcessMessage($config) {
         die("Connection failed: " . $conn->connect_error);
     }
     if (filter_input(INPUT_POST, "type") && filter_input(INPUT_POST, "type") == "newUser") {
+        if (filter_input(INPUT_POST, "userId")==null){
+            ReturnError("Invalid Request. All fields must be filled.");
+        }
         $insertStmt = $conn->prepare('INSERT INTO user (userId, username) VALUES (?, "TestUser")');
         $insertStmt->bind_param("i", $userid);
         $userid = $conn->real_escape_string(filter_input(INPUT_POST, "userId"));
@@ -33,6 +36,10 @@ function ProcessMessage($config) {
         $conn->close();
         CompleteInsert($success, $insertStmt->error, "User already exists.");
     } else {
+        //Basic validation. Improve to spare the sql server
+        if (filter_input(INPUT_POST, "userId")==null||filter_input(INPUT_POST, "currencyFrom")==null||filter_input(INPUT_POST, "currencyTo")==null||filter_input(INPUT_POST, "amountSell")==null||filter_input(INPUT_POST, "amountBuy")==null||filter_input(INPUT_POST, "rate")==null||filter_input(INPUT_POST, "timePlaced")==null||filter_input(INPUT_POST, "originatingCountry")==null) {
+            ReturnError("Invalid Request. All fields must be filled.");
+        }
         $checkStmt = $conn->prepare("SELECT lastRequest, throttleLimit FROM user WHERE userID = ?");
         $minute = 60; //seconds
         $minuteLimit = $config["requestLimit"];
@@ -68,7 +75,7 @@ function ProcessMessage($config) {
                     . ' requests has been exceeded. Please wait ' . $wait . ' seconds before attempting again.');
             return;
         }
-        //Should this go before or after the inesrt attempt? Before means failed transactions still throttle
+        //Should this go before or after the insert attempt? Before means failed transactions still throttle
         $userStmt = $conn->prepare("UPDATE user SET lastRequest = ?, throttleLimit = ? WHERE userID = ?");
         $dateNow = date('Y-m-d H:i:s');
         $userStmt->bind_param("sdi", $dateNow, $newMinuteThrottle, $userid);
@@ -79,7 +86,7 @@ function ProcessMessage($config) {
             ReturnError("Throttling failed");
         }
 
-        //Prepare request - There is no validation here. Also I'm paranoid about SQL injection
+        //Prepare request - I'm paranoid about SQL injection
         $insertStmt = $conn->prepare("INSERT INTO transaction (userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, timePlaced, originatingCountry) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $insertStmt->bind_param("issdddss", $userid, $currencyFrom, $currencyTo, $amountSell, $amountBuy, $rate, $timePlaced, $originatingCountry);
         $currencyFrom = $conn->real_escape_string(filter_input(INPUT_POST, "currencyFrom"));
@@ -93,6 +100,11 @@ function ProcessMessage($config) {
             $datetime = DateTime::createFromFormat('d-m-Y H:i:s', $conn->real_escape_string(filter_input(INPUT_POST, "timePlaced")), $timezone);
         }
         $timePlaced = date_format($datetime, 'Y-m-d H:i:s');
+        if ($timePlaced==null)
+        {
+            ReturnError("Invalid timePlaced. It must be in the datetime format 24-JAN-15 10:27:44");
+        }
+        //No real requirements on validation. Normally all fields would need to be vetted. The SQL Server won't do it until foreign keyed.
         $originatingCountry = $conn->real_escape_string(filter_input(INPUT_POST, "originatingCountry"));
         $success = $insertStmt->execute();        
         $conn->close();
@@ -108,7 +120,7 @@ function CompleteInsert($success, $error, $duplicateMsg){
             if (stripos($error, "Duplicate") > -1) {
                 ReturnError($duplicateMsg);
             } else {
-                ReturnError("I suffered an error trying to process your transaction. Please try again later.");
+                ReturnError("I suffered an error trying to process your transaction. SQL Error: " + $error);
             }
         }
 }

@@ -1,5 +1,6 @@
 CREATE DATABASE `mtp` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
+use `mtp`;
 CREATE TABLE `currency` (
   `currencyCode` varchar(3) NOT NULL,
   `currencyName` varchar(45) NOT NULL,
@@ -37,3 +38,6 @@ CREATE TABLE `transaction` (
   PRIMARY KEY (`transactionId`),
   KEY `currencyFrom_idx` (`currencyFrom`)
 ) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+
+INSERT INTO `user`(`userId`,`userName`)
+VALUES ('134256','Default User')
