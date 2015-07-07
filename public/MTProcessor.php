@@ -2,7 +2,7 @@
 
 //ini_set('display_errors', 1);
 error_reporting(E_ALL ^ E_WARNING); //Turn off when testing, keeps warnings from being spewed at the requestors
-$config = json_decode(file_get_contents('../config.json'), true);
+$config = json_decode(file_get_contents('../config/config.json'), true);
 if ($config["domainRestricted"] == true) {
     if (array_key_exists('HTTP_REFERER', filter_input_array(INPUT_SERVER)) && strpos(filter_input(INPUT_SERVER, 'HTTP_REFERER'), $config["domain"])) {
         ProcessMessage($config);

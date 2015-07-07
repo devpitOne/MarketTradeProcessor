@@ -4,7 +4,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var db = require('mysql');
-var config = require("./config.json");
+var config = require("./config/config.json");
 
 //TODO: Prepared statements with the mysql module. No dynamic queries yet.
 var pool = db.createPool(config.sqlConn);

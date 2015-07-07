@@ -1,6 +1,6 @@
 # mod_rewrite
 RewriteEngine on
-RewriteRule ^$ /public/ [L,R=301]
+RewriteRule /config/ /public/ [L,R=301]
 
 # mod_alias
 # RedirectMatch 301 ^/old\.html$ /new.html

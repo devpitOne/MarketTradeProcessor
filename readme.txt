@@ -10,23 +10,25 @@ MySQL
 The SeleniumTests require Selenium http://docs.seleniumhq.org/
 
 Installation:
-Is likely to be fraught with worry as all installations are. Do not be overly concerned. Any failures are on my part, not yours.
+Is likely to have problems as installations do. Do not be overly concerned. Any failures are on my part, not yours.
 
-The DB Creation Script is under DB_Script. Run that first.
+The DB Creation Script is under DB_Script. Run that first against your mysql instance.
 
 The web config is the config.json file under the root. Alter it to set your DB Connection. 
 
-Deploy the project to your web server or run with an IDE. There's a htaccess for apache to keep people in the public folder.
+Deploy the project's main, config and public folder to your web server or run with an IDE. There's a htaccess for apache to keep people out of the config folder. Use appropriate controls if not using apache.
 
-ReportServer.js is the Node.js server file. You'll need to run with node.
+ReportServer.js is the Node.js server file. You'll need to run with node. 
 
 Usage:
 The three interactive webpages are 
--AddUser.html expedite adding new user ids to the database
+-AddUser.html to expedite adding new user ids to the database
 -TransactionTest.html which interacts with the POST endpoint 
--Reporting.html which is served by Node.js. It has three fairly static displays. The List shows the most recent transactions, the graph charts transfers by currency pair and the map can be hovered over to see which transfers by country
+-Reporting.html which is served by Node.js. It has three fairly static displays. The List shows the most recent transactions, the graph charts transfers by currency pair and the map can be hovered over to see how many transfers by country
 
-The POST endpoint is at MTProcessor.php, there's referrer checking enforced. It can be turned off in the config.
+To access reporting.html start ReportServer.js with node and browse to port 3000 eg. localhost:3000 locally
+
+The POST endpoint is at MTProcessor.php, there's referrer checking enforced. It can be turned off in the config. Don't rely on this too much as referrers can be spoofed.
 If the userid given does not exist in the database it will return an error.
 
 Nice-to-haves
