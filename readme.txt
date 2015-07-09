@@ -9,6 +9,11 @@ PHP 5.6
 MySQL
 The SeleniumTests require Selenium http://docs.seleniumhq.org/
 
+Updates:
+As I go along the Db will receive updates. In the interests of compatibility I'll provide a new DB Creation script each time but also an Update script for those who want to keep their DB and incorporate the changes.
+
+currency_Update1 is available, adding foreign key references to transactions. this will ensure currencies come from the approved list.
+
 Installation:
 Is likely to have problems as installations do. Do not be overly concerned. Any failures are on my part, not yours.
 
