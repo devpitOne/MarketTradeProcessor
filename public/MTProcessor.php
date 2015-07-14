@@ -2,7 +2,21 @@
 
 //ini_set('display_errors', 1);
 error_reporting(E_ALL ^ E_WARNING); //Turn off when testing, keeps warnings from being spewed at the requestors
+use ElephantIO\Client,
+    ElephantIO\Engine\SocketIO\Version1X;
+//TODO: Refactoring the framework should allow me to add an autoloader.
+include 'ElephantIO\Client.php';
+include 'ElephantIO\EngineInterface.php';
+include 'ElephantIO\AbstractPayload.php';
+include 'ElephantIO\Engine\SocketIO\Session.php';
+include 'ElephantIO\Engine\AbstractSocketIO.php';
+include 'ElephantIO\Engine\SocketIO\Version1X.php';
+include 'ElephantIO\Payload\Encoder.php';
+include 'ElephantIO\Payload\Decoder.php';
+include 'ElephantIO\Exception\ServerConnectionFailureException.php';
+
 $config = json_decode(file_get_contents('../config/config.json'), true);
+
 if ($config["domainRestricted"] == true) {
     if (array_key_exists('HTTP_REFERER', filter_input_array(INPUT_SERVER)) && strpos(filter_input(INPUT_SERVER, 'HTTP_REFERER'), $config["domain"])) {
         ProcessMessage($config);
@@ -12,13 +26,13 @@ if ($config["domainRestricted"] == true) {
 } else
     ProcessMessage($config);
 
-//Passing the config is annoying but I don't like globals
+//The main process logic for messages. Passing the config is annoying but I don't like globals
 function ProcessMessage($config) {
     //Create connection
     $servername = $config["sqlConn"]["host"] . ":" . $config["sqlConn"]["port"];
     $username = $config["sqlConn"]["user"];
     $password = $config["sqlConn"]["password"];
-    $database = $config["sqlConn"]["database"];    
+    $database = $config["sqlConn"]["database"];
     $conn = new mysqli($servername, $username, $password, $database);
     //Check connection
     if ($conn->connect_error) {
@@ -26,18 +40,18 @@ function ProcessMessage($config) {
         die("Connection failed: " . $conn->connect_error);
     }
     if (filter_input(INPUT_POST, "type") && filter_input(INPUT_POST, "type") == "newUser") {
-        if (filter_input(INPUT_POST, "userId")==null){
+        if (filter_input(INPUT_POST, "userId") == null) {
             ReturnError("Invalid Request. All fields must be filled.");
         }
         $insertStmt = $conn->prepare('INSERT INTO user (userId, username) VALUES (?, "TestUser")');
         $insertStmt->bind_param("i", $userid);
         $userid = $conn->real_escape_string(filter_input(INPUT_POST, "userId"));
-        $success = $insertStmt->execute();        
+        $success = $insertStmt->execute();
         $conn->close();
         CompleteInsert($success, $insertStmt->error, "User already exists.");
     } else {
         //Basic validation. Improve to spare the sql server
-        if (filter_input(INPUT_POST, "userId")==null||filter_input(INPUT_POST, "currencyFrom")==null||filter_input(INPUT_POST, "currencyTo")==null||filter_input(INPUT_POST, "amountSell")==null||filter_input(INPUT_POST, "amountBuy")==null||filter_input(INPUT_POST, "rate")==null||filter_input(INPUT_POST, "timePlaced")==null||filter_input(INPUT_POST, "originatingCountry")==null) {
+        if (filter_input(INPUT_POST, "userId") == null || filter_input(INPUT_POST, "currencyFrom") == null || filter_input(INPUT_POST, "currencyTo") == null || filter_input(INPUT_POST, "amountSell") == null || filter_input(INPUT_POST, "amountBuy") == null || filter_input(INPUT_POST, "rate") == null || filter_input(INPUT_POST, "timePlaced") == null || filter_input(INPUT_POST, "originatingCountry") == null) {
             ReturnError("Invalid Request. All fields must be filled.");
         }
         $checkStmt = $conn->prepare("SELECT lastRequest, throttleLimit FROM user WHERE userID = ?");
@@ -100,29 +114,27 @@ function ProcessMessage($config) {
             $datetime = DateTime::createFromFormat('d-m-Y H:i:s', $conn->real_escape_string(filter_input(INPUT_POST, "timePlaced")), $timezone);
         }
         $timePlaced = date_format($datetime, 'Y-m-d H:i:s');
-        if ($timePlaced==null)
-        {
+        if ($timePlaced == null) {
             ReturnError("Invalid timePlaced. It must be in the datetime format 24-JAN-15 10:27:44");
         }
         //No real requirements on validation. Normally all fields would need to be vetted. The SQL Server won't do it until foreign keyed.
         $originatingCountry = $conn->real_escape_string(filter_input(INPUT_POST, "originatingCountry"));
-        $success = $insertStmt->execute();        
+        $success = $insertStmt->execute();
         $conn->close();
         CompleteInsert($success, $insertStmt->error, "Transaction already processed.");
-        
     }
 }
 
-function CompleteInsert($success, $error, $duplicateMsg){
+function CompleteInsert($success, $error, $duplicateMsg) {
     if ($success === TRUE) {
-            ReturnSuccess("Transaction processed successfully");
-        } else {            
-            if (stripos($error, "Duplicate") > -1) {
-                ReturnError($duplicateMsg);
-            } else {
-                ReturnError("I suffered an error trying to process your transaction. SQL Error: " + $error);
-            }
+        ReturnSuccess("Transaction processed successfully");
+    } else {
+        if (stripos($error, "Duplicate") > -1) {
+            ReturnError($duplicateMsg);
+        } else {
+            ReturnError("I suffered an error trying to process your transaction. SQL Error: " + $error);
         }
+    }
 }
 
 function ReturnError($errorMsg) {
@@ -133,6 +145,15 @@ function ReturnError($errorMsg) {
 
 function ReturnSuccess($errorMsg) {
     $arr[] = array("success" => $errorMsg);
-    echo json_encode($arr);
+    try {
+    $client = new Client(new Version1X('http://localhost:3000'));
+    $client->initialize();
+    $client->emit('update', ['foo' => 'bar']);
+    $client->close();
+    }
+    catch (\Exception $e) {
+        ReturnError("Transaction succeeded but unable to contact reporting server.");
+    }
+    echo json_encode($arr);    
     exit;
 }

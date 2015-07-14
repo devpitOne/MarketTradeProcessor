@@ -69,10 +69,8 @@ $(document).ready(function () {
         );
     });
 
-    //Initial requests to get us loaded
-    socket.emit("listRequest", "");
-    socket.emit("graphRequest", "");
-    socket.emit("mapRequest", "");
+    //Initial request to get us loaded
+    socket.emit("update", "");
 });
 
 function AddSpaces(string) {

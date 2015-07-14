@@ -26,9 +26,15 @@ var queryCallback = function (err, rows, fields) {
 io.on('connection', function (socket) {
     console.log('user connected');
     
-    socket.on('listRequest', function(){ListQuery()});
-    socket.on('graphRequest', function () {GraphQuery()});
-    socket.on('mapRequest', function () {MapQuery()});
+    socket.on('listRequest', function(){ListQuery();});
+    socket.on('graphRequest', function () {GraphQuery();});
+    socket.on('mapRequest', function () {MapQuery();});
+    socket.on('update',function () {
+        console.log("Update Requested");
+        ListQuery();
+        GraphQuery();
+        MapQuery();
+    });
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
@@ -43,7 +49,7 @@ app.get('/', function (req, res) {
 http.listen(config.nodePort, function () {
     console.log('listening on *:' + config.nodePort);
 });
-RealTimeEmit(); //Start the realtime broadcast
+//RealTimeEmit(); //Starts an update cycle of every ten seconds. Deprecated.
 
 //Service Functions
 function RealTimeEmit() {
